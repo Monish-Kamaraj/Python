@@ -1,0 +1,30 @@
+True
+False
+##########################################################################################################################################
+None
+None == 0 =>False
+None = [] =>False
+#function without return statement by default will return none. 
+def math():
+    a = 2
+    b = 5
+    c = a+b
+print(math())
+
+#Even when the function contains return statement, if the condition is not satisfied, the function will return only "none" as output.
+For the satisfied condition alone it will return the desired output.
+Function returns "None" as output:
+def math(a):
+    c = a%2
+    if c == 1:
+        return c
+print(math(4))
+Function returen the desired output:
+def math(a):
+    c = a%2
+    if c == 1:
+        return c
+print(math(5))
+Op=1
+##########################################################################################################################################
+
