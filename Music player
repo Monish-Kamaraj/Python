@@ -1,0 +1,238 @@
+from tkinter import *
+from pygame import mixer
+import tkinter.messagebox
+import tkinter.filedialog
+import os
+from mutagen.mp3 import MP3
+import time
+import threading
+from tkinter import ttk
+from ttkthemes import themed_tk as tk
+
+os.chdir('F:\python')
+
+
+mixer.init() #initailizing the mixer
+
+root=tk.ThemedTk()
+root.get_themes()
+root.set_theme("radiance")
+
+#root.geometry('300x300')
+root.iconbitmap(r'music.ico')
+root.title('Magical Music Box')
+
+listbox=[]
+
+def browse_file():
+    global filename
+    filename=filedialog.askopenfilename()
+    add_to_playlist(filename)
+    
+def add_to_playlist(f):
+    f=os.path.basename(f)
+    index=0
+    playlistbox.insert(index,f)
+    listbox.insert(index,filename)
+    index +=1
+    
+def delete_playlistsong():
+    del_index=playlistbox.curselection()
+    del_index=int(del_index[0])
+    playlistbox.delete(del_index)
+    listbox.pop(del_index)
+
+status=ttk.Label(root, text="Experience the Magic", relief=SUNKEN, anchor=W)
+status.pack(side=BOTTOM, fill=X)
+
+leftframe = Frame(root)
+leftframe.pack(side=LEFT,padx=30,pady=30)
+
+rightframe = Frame(root)
+rightframe.pack(side=LEFT,pady=30)
+
+playlistbox=Listbox(leftframe)
+playlistbox.pack()
+
+add_button=ttk.Button(leftframe,text='+add',command=browse_file)
+add_button.pack(side=LEFT)
+
+del_button=ttk.Button(leftframe,text='-del', command=delete_playlistsong)
+del_button.pack(side=LEFT,padx=5)
+
+topframe = Frame(rightframe)
+topframe.pack()
+
+#filelabel=Label(topframe, text="Let the magic begin !!", fg="black")
+#filelabel.pack()
+
+playtimelabel=ttk.Label(topframe, text="Total Length : --:--")
+playtimelabel.pack(pady=5)
+
+currenttimelabel=ttk.Label(topframe, text="Current Time : --:--", relief=GROOVE)
+currenttimelabel.pack(pady=5)
+
+
+    
+
+
+def play_music():
+    global paused
+    
+    if paused :
+        mixer.music.unpause()
+        status['text']="Music Resumed "
+        paused = FALSE
+    else:
+        try:
+            stop_music()
+            time.sleep(1)
+            selected_song=playlistbox.curselection()
+            selected_song=int(selected_song[0])
+            play_it=listbox[selected_song]
+            mixer.music.load(play_it)
+            mixer.music.play()
+            
+            #mixer.music.load(filename)
+            #mixer.music.play()
+            status['text']="Playing music "+"- "+os.path.basename(play_it)
+            time_cal(play_it)
+            #filelabel['text']="Playing "
+            #time_cal()
+            
+        except:
+            tkinter.messagebox.showerror('File not found','Magical Box could not find the file')
+        
+        
+def stop_music():
+    mixer.music.stop()
+    status['text']="Music Stopped "
+
+def time_cal(play_song):
+    file_format=os.path.splitext(play_song)
+    if file_format[1] == '.mp3':
+        audio=MP3(play_song)
+        time_cal=audio.info.length
+    else:
+        a=mixer.Sound(play_song)
+        time_cal=a.get_length()
+        
+    mins,secs=divmod(time_cal,60)
+    mins=round(mins)
+    secs=round(secs)
+    run_time='{:02d}:{:02d}'.format(mins,secs)
+    playtimelabel['text']="Total Length "+"- "+run_time
+    
+    t1=threading.Thread(target=start_count, args=(time_cal,))
+    t1.start()
+    
+    
+def start_count(t):
+    global paused
+    currentime=0
+    while currentime<=t and mixer.music.get_busy():
+        if paused:
+            continue
+        else:
+            mins,secs=divmod(currentime,60)
+            mins=round(mins)
+            secs=round(secs)
+            run_time='{:02d}:{:02d}'.format(mins,secs)
+            currenttimelabel['text']="Remaining Time "+"- "+run_time
+            time.sleep(1)
+            currentime +=1
+        
+    
+paused = FALSE
+def pause_music():
+    global paused
+    paused = TRUE
+    mixer.music.pause()
+    status['text']="Music Paused "
+
+def set_vol(val):
+    volume=int(val)/100
+    mixer.music.set_volume(volume)
+
+def show_info():
+    tkinter.messagebox.showinfo('Melody',"Magical Music Box is created with python Tkinter")
+
+def file_open():
+    global filename
+    filename=filedialog.askopenfilename()
+    
+def rewind_music():
+    play_music()
+    status['text']="Music Rewinded "
+    
+muted = FALSE
+def volume_music():
+    global muted
+    if muted:
+        volumebutton.config(image=volumeimage)
+        mixer.music.set_volume(0.7)
+        scale_bar.set(70)
+        status['text']="Music Unmuted "
+        muted = FALSE
+    else:
+        volumebutton.config(image=muteimage)
+        mixer.music.set_volume(0)
+        scale_bar.set(0)
+        status['text']="Music Muted "
+        muted = TRUE
+        
+def on_closing():
+    stop_music()
+    root.destroy()
+
+middleframe = Frame(rightframe)
+middleframe.pack(pady=10)
+
+playphoto=PhotoImage(file ='play.png')
+playbutton=ttk.Button(middleframe, image = playphoto, command=play_music)
+playbutton.grid(row=0,column=0, padx=10)
+
+stopimage=PhotoImage(file='stop.png')
+stopbutton=ttk.Button(middleframe, image = stopimage, command=stop_music)
+stopbutton.grid(row=0,column=1,padx=10)
+
+pauseimage=PhotoImage(file='pause.png')
+pausebutton=ttk.Button(middleframe,image=pauseimage, command=pause_music)
+pausebutton.grid(row=0,column=2,padx=10)
+
+bottomframe = Frame(rightframe)
+bottomframe.pack()
+
+rewindimage=PhotoImage(file='rewind.png')
+rewindbutton=ttk.Button(bottomframe,image=rewindimage, command=rewind_music)
+rewindbutton.grid(row=0,column=0)
+
+volumeimage=PhotoImage(file='volume.png')
+muteimage=PhotoImage(file='mute.png')
+volumebutton=ttk.Button(bottomframe,image=volumeimage, command=volume_music)
+volumebutton.grid(row=0,column=1,padx=10)
+
+scale_bar=ttk.Scale(bottomframe, from_=0, to=100, orient=HORIZONTAL, command=set_vol)
+scale_bar.set(70)
+mixer.music.set_volume(0.7)
+scale_bar.grid(row=0,column=2,pady=15,padx=30)
+
+
+
+menubar=Menu(root)
+root.config(menu=menubar)
+
+submenu=Menu(menubar, tearoff=0)
+menubar.add_cascade(label="File", menu=submenu)
+submenu.add_command(label="Open",command=file_open)
+submenu.add_command(label="Exit", command=root.destroy)
+
+aboutmenu=Menu(menubar, tearoff=0)
+menubar.add_cascade(label="Help",menu=aboutmenu)
+aboutmenu.add_command(label="About Us", command=show_info)
+
+
+ 
+root.protocol("WM_DELETE_WINDOW",on_closing)
+root.mainloop()
+ 
