@@ -27,4 +27,80 @@ def math(a):
 print(math(5))
 Op=1
 ##########################################################################################################################################
+index
+1)Sum function
+2)Formatting function
+3)Array Diagnal Sum
+4)Patter Right angled triangle
 
+Sum function *****Sum function*********
+a=[1,2,3,4,5]
+b=sum(a,3)
+print(b)
+o/p:18
+
+a=[1,2,3,4,5]
+b=sum(a)
+print(b)
+o/p=15
+
+============================================================
+*******************Forrmating of numbers********************
+print("{:011.6f}".format(1.5))
+11 represents totals digits which is 11 and 6f represents 
+
+how many digits after decimal
+print("{:6f}".format(1.5))
+print("{:6d}".format(1))
+11 represents totals digits which is 6
+print("{:6d}".format(1234567))
+print(round(1.9))
+print(round(1.9))
+print(round(1.988,2))
+
+o/p:
+0001.500000
+1.500000
+     1
+1234567
+
+============================================================
+********************Array diagnal sum***********************
+n=3
+i\p=> a = [[11,2,4],[4,5,6],[10,8,-12]]
+
+diagonalDifference(arr,n):
+    d1=0
+    d2=0
+    for i in range(0,n):
+        for j in range(0,n):
+            if i == j:
+                d1 += arr[i][j]
+            if i == n-j-1:
+                d2 +=arr[i][j]
+    return(abs(d1-d2))
+
+2
+2
+1.99
+
+============================================================
+*******************Rightangle Triangle**********************
+def staircase(n):
+   
+    for i in range(0,n):
+        k=n-1
+        for j in range(0,k):
+            print( end = " ")
+        for j in range(0,i+1):
+            print("#", end ="") 
+        print("") 
+        n -=1
+
+o\p:
+     #
+    ##
+   ###
+  ####
+ #####
+######
