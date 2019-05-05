@@ -1,0 +1,39 @@
+class student:
+    #class variable/static variable
+    university = 'ANNA UNIVERSITY'
+    def __init__(self,name,rollno):
+        #declaring instance variable in constructor
+        self.name = name
+        self.rollno = rollno
+        
+    #instance method    
+    def collegename(self):
+        print("Student name is ", self.name)
+        print("Student rollno is ", self.rollno)
+        #declaring the instance variable inside the instance method
+        self.coll = 'RMK'
+        print("Student rollno is ", self.coll)
+    
+    def college(self):
+        print("again printing college name", self.coll)
+        print(self.name, "departement name is ", self.department)
+        
+    #class method    
+    @classmethod
+    def univ(cls):
+        print("Name of the university", cls.university)
+    #static method    
+    @staticmethod    
+    def average(x,y):
+        print('average of two numbers', (x+y)/2)
+    
+    
+s1 = student('Monish',100)
+#declaring instance variable outside the class s.department = EEE
+s1.department = 'EEE'
+s1.collegename()
+s1.college()
+s1.univ()
+print(s1.__dict__)
+# print the instance variable of object s1
+student.average(10,20)
