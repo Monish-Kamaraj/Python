@@ -1,0 +1,113 @@
+Pandas========Basics=================================================================
+1. df.shape -> to get the number of rows and columns and its  get stored in tuple.
+2. row, column=df.shape
+3. df.describe
+4. df.columns - > prints all the columns names
+5. df.column or df['columnn'].max() and other functions
+6. df.head()
+7. df.tail()
+8. df.fillna(0)
+9. df[['column1','column2','column3']] -> to select columns 
+10. df[2:5] -> to select the rows
+11. df[df['column'].max()]
+12. df[df.temperature==df[temperature.max()]].
+13. df.set_index('column') -> so that we can access all the values of the particular column element by using df.loc['value']
+14. to read and write files try google pandas io
+15. df= pd.read_csv("path", skiprow=1 or header =1 or header = None(title is ignored or nrows=3 (prints first three rows) -> neglects the first row.
+16. df= pd.read_csv("path", header = None, names=['name1', 'name2' -> give the column names]
+17. df= pd.read_csv("path", na_vales=["not available","n.a."]) -> It will fill the mentioned values with NaN
+18. Some values are not be filled with NaN, in that case pass dict as input with column name
+df = pd.read_csv("path", na_values=
+{ 'eps' : ["not available","n.a."]
+  'revenue':"not available","n.a.",-1] } )
+19. df.to_csv('name', index = Flase ) -> it wont print the index in excel
+20. df.to_csv('name', columns=['name1','name2'] ) -> prints only the particular column
+21. Converters -> to fill values in excel
+22. df.to_excel('name', startrow=1, startcolumn=2 ) -> we can mention where it has to start in row and column
+23. for writing we can also use excelwriter
+
+
+============================Mising data in pandas ========================================================================
+using fillna,interpolate,dropna
+1) if we have column having date. If we check the type if it is in string format, to convert in date format use the function 
+df = pd.read_csv("path", parse_dates=["column_name"])
+2) df.fillna(0) - > This command fill all the na values with 0. If we dont want na value to be filled in particular column we can use dict 
+df.fillna(
+{ 'date' : 0,
+  'revenue': 0,
+  'event':'no event' } ) -> by this it fills no event in the event column. 
+3) df= pd.fillna(method="ffill') -> fffill means forward fill where it fills the Na values with previous values. we can also use "Bfill" to fill values with the next 
+
+values. pandas fillna gives us more insight
+4)df= pd.fillna(method="ffill', axis = "columns") -> it will copy horizontally 
+5)df= pd.fillna(method="ffill', limit =1) if we have more than 2 missing values to be filled it will fill only immediate next empty value leaving behind the next one. 
+6) df = df.interpolate() -> It will automatically fill the missing values with the better predictions. By default the method taken is linear we can use other menthos 
+
+mentioned in documentation. method="time" give us some better results. 	
+7) df=pd.dropna()-> drop all na values 
+8) df= pd.dropna(how="all)) -> drop Na if all the row values are empty
+9) df = pd.dropna(thres = 1 ) -> does not remove row if it has atleast 1 non Na value
+
+===========================handling missing data and replace function========================================================
+1) df=pd.replace(-99999, np.NaN) -> it wil replace all the -99999 with NaN values. If we have mor than one values provide input with list df=pd.replace([-99999, -
+
+88888], np.NaN)
+2) we can use dict in case to be more specific 
+df = pd.replace(
+{ 'temp' = -99999,
+  'revenue'=-88888,
+  'event' = 0 }, np.NaN)
+3) we can use for any simple replace values
+df = pd.replace(
+{ -99999: np.NaN,
+ - 88888: np.NaN,
+ 'No event' : 'Sunny' } )
+4) If we have values with unit of measure like temp with 32 F, speed with 32 km/hr use regex
+df = pd.replace(
+{ 'Temp' : '[A-Za-z]',
+ ' windspeed': '[A-Za-z]'},'',regex = True)
+5) replace list of values by another list of values 
+df = pd.replace(['Excellent','good','better'],[3,2,1])
+
+=============================Pandas Group by ======================================================================================
+g= df.groupby('city')
+for accessing each group use for loop 
+for city, city_df in g:
+    print(city) - > print city
+    print(city_df) -> print dataframe corresponding to each city
+g.get_group('mumbai') - > It will return dataframe corresponding to city mumbai
+
+To get maximum temperature in each city group use comman
+g.max()
+g.mean()
+g.describe()
+
+=============================Pandas Concat =============================================================================================
+pd.concat([indai weather, us weather]) -> give the dataframe name you need to concat
+pd.concat([indai weather, us weather], ignore_index =Ture) -> to get continuous index values
+pd.concat([indai weather, us weather], keys=["india","US"]) -> It will create additional index to each dataframe as India and US. To Access this us 
+df.loc["india"]
+pd.concat([indai weather, us weather], axis = 1) - > to concat horizaontally
+s = pd.Series(["Rain","Sunny","Humid"], name = "Event")
+pd.concant([name1,s], axis = 1(to inser as new column)) 
+
+==============================Merge Dataframe ===========================================================================================
+Merge is better than concat
+df=pd.merge(df1,df2, on ="city") -> It will merge based on condition
+df=pd.merge(df1,df2, on ="city", how = "outer") -> It will provide outer join
+df=pd.merge(df1,df2, on ="city", how = "outer", indicator = True(It will provide where data came from left table or right table))
+Suffixes we can remane the suffixes using this function
+
+==============================Pivot tables===============================================================================================
+Pivot helps to reshape and transform the dataframe 
+df.pivot(index="date"(x or rows), columns="city"(y), values = "Humidity"(You can restrict the additional columns here) 
+Pivot table used to summarize and aggregate data inside dataframe 
+df.pivot_table (index="date"(x or rows), columns="city"(y), values = "Humidity", aggfunc="sum", margins=True(gives aggregate of all columns)) - > aggregation more than 
+
+one value
+df.pivot_table(index=pd.Grouper(freq='M', key='date'),columns='city') -> grouper function
+
+
+
+
+
