@@ -1,4 +1,8 @@
 Pandas========Basics=================================================================
+Dataframe is the collection of rows and columns.
+each column is a series.
+to create new column like location -> city + state 
+df['Location'] = df.city+ ','+df.state
 1. df.shape -> to get the number of rows and columns and its  get stored in tuple.
 2. row, column=df.shape
 3. df.describe
@@ -25,6 +29,38 @@ df = pd.read_csv("path", na_values=
 21. Converters -> to fill values in excel
 22. df.to_excel('name', startrow=1, startcolumn=2 ) -> we can mention where it has to start in row and column
 23. for writing we can also use excelwriter
+
+============================Rename coulumns in pandas===================================================================
+
+1)df.rename(columns={ 'column name':' new column name'} , inplace = True)
+2) new_name_list = [ 'column name 1','column name 2','column name 3']
+   df.columns = df.new_column_list 
+      or 
+
+df=pd.read_csv("path" , names=new_name_list , header = 0)
+
+Bonus: suppose we have column name like colors reported, shape reported like space in between two name we have to change like colors_reported, shape_reported for 
+
+hundreds of columns we can we below code 
+df.columns =df.columns.str.replace(' ', '_')
+
+================================Remove columns from dataframe=================================================================
+
+df.drop('column name1' , axis =1, inplace = True) we cane also pass list of columns like 
+df.drop(['column name1','column name2']  , axis =1, inplace = True)
+
+for dropping rows use index 
+df.drop([0,1]  , axis =0 , inplace = True) -> by default axis =0 dont need to mention explictly
+
+===================================Sort pandas dataframe or series=============================================================
+
+dataframe name, column name then sort function
+
+df.title.sort_values() or df['title'].sort_values() for descending give df['title'].sort_values( ascending = False )
+
+df.sort_values('title') -> will print the entire dataset we can also pass list of column names in column
+
+df.sort_values(['title','date','rating'])
 
 
 ============================Mising data in pandas ========================================================================
